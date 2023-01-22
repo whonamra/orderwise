@@ -16,8 +16,6 @@ router.post("/add-order", async (req, res, next) => {
             });
         }
 
-        
-
         const order = new Order({
             orderId: new mongoose.Types.ObjectId(),
             userId: userId,
