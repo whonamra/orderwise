@@ -111,7 +111,7 @@ router.post("/get-orders-by-groupid", async (req, res, next) => {
             // console.log(item);{
             var temp = await Order.find({ userId: test });
             for (const item of temp) {
-                console.log(item);
+                // console.log(item);
                 result.push(item);
             }
         }
