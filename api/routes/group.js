@@ -111,10 +111,14 @@ router.post("/leave-group", async (req, res, next) => {
             console.log(item);
             if (item != userId) result.push(item);
         }
-        group.userIdArray = result;
-        await Group.updateOne({ groupId }, result);
+        console.log(result);
+        // group.userIdArray = result;
+        await Group.findOneAndUpdate(
+            { groupId: groupId },
+            { userIdArray: result }
+        );
         res.send({
-            message: "Groups deleted successfully",
+            message: "Groups left successfully",
         });
     } catch (error) {
         return res.status(500).json({
