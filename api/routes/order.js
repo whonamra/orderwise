@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const Order = require("../models/orderSchema");
 const User = require("../models/userSchema");
+const Group = require("../models/groupSchema");
 
 router.post("/add-order", async (req, res, next) => {
     try {
@@ -54,6 +55,110 @@ router.get("/get-orders", async (req, res, next) => {
 
         res.send({
             orderDetails,
+            message: "Orders Successfully fetched",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: error,
+            message: "Unexpected error. Please try again",
+        });
+    }
+});
+
+router.get("/get-friends-order", async (req, res, next) => {
+    try {
+        const userId = req.headers.authorization.split(" ")[1];
+        // console.log(userId);
+        let result = [];
+        const user = await User.findOne({ userId: userId });
+        const groupIds = [];
+        await (
+            await Group.find({})
+        ).forEach((item) => {
+            item.userIdArray.forEach((el) => {
+                if (el == userId) groupIds.push(item.groupId);
+            });
+        });
+
+        if (!groupIds) {
+            return res.status(500).json({
+                error: error,
+                message: "Unexpected error. 1 Please try again",
+            });
+        }
+        // console.log(groupIds);
+        await Order.find({}).then(async (test) => {
+            for (const item of test)
+                for (const temp of groupIds) {
+                    await User.findOne({ userId: item.userId }).then((res) => {
+                        if (temp == item.groupId && item.userId != userId) {
+                            var userName = res.userName;
+                            var xyz = { item, userName };
+                            // console.log(xyz);
+                            // parseJson[userName] = user.userName;
+
+                            result.push(xyz);
+                        }
+                    });
+                }
+            console.log(result);
+        });
+
+        // groupIds.forEach(async (el) => {
+        //     // console.log(el);
+        //     var temp = await Order.find({ groupId: el });
+        //     temp.forEach((el) => {
+        //         console.log(el.userId);
+        //         console.log(userId);
+        //         if (el.userId != userId) {
+        //             // console.log(el);
+        //             result.push({ orderId: el.orderId, userId: el.usereId });
+        //         }
+        //     });
+        // });
+
+        // console.log(result);
+        if (result.length)
+            res.send({
+                result,
+                message: "Orders Successfully fetched",
+            });
+    } catch (error) {
+        return res.status(500).json({
+            error: error,
+            message: "Unexpected error. Please try again",
+        });
+    }
+});
+
+router.post("/order-complete", async (req, res, next) => {
+    try {
+        const userId = req.headers.authorization.split(" ")[1];
+        const { orderId } = req.body;
+        const _user = await User.findOne({ userId: userId });
+        if (!_user) {
+            return res.status(409).json({
+                message: "User not found",
+            });
+        }
+
+        const order = await Order.find({ orderId: orderId });
+        if (!order) {
+            return res.status(409).json({
+                message: "Order not found",
+            });
+        }
+
+        const updatedOrder = await Order.findOneAndUpdate(
+            { orderId: orderId },
+            { isComplete: true, boughtBy: _user.userName },
+            {
+                new: true,
+            }
+        );
+
+        res.send({
+            updatedOrder,
             message: "Orders Successfully fetched",
         });
     } catch (error) {

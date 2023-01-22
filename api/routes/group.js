@@ -14,12 +14,14 @@ router.get("/get-groups", async (req, res, next) => {
             await Group.find({})
         ).forEach((item) => {
             item.userIdArray.forEach((el) => {
-                if (el == userId) result.push(item.groupId);
+                if (el == userId) {
+                    item.userIdArray = item.userIdArray.length;
+                    result.push(item);
+                }
             });
         });
-        console.log(result);
         res.send({
-            result,
+            data: result,
             message: "Groups Successfully fetched",
         });
     } catch (error) {
@@ -57,8 +59,10 @@ router.post("/add-groups", async (req, res, next) => {
 router.post("/join-groups", async (req, res, next) => {
     try {
         const userId = req.headers.authorization.split(" ")[1];
-        const user = await User.find({ userId: userId });
-        if (!user.length) {
+        console.log(userId);
+        const user = await User.findOne({ userId: userId });
+        console.log(user);
+        if (!user) {
             return res.status(409).json({
                 message: "User not found",
             });
@@ -92,6 +96,45 @@ router.post("/join-groups", async (req, res, next) => {
     } catch (error) {
         return res.status(500).json({
             error,
+            message: "Unexpected error. Please try again",
+        });
+    }
+});
+
+router.post("/get-orders-by-groupid", async (req, res, next) => {
+    try {
+        const { groupId } = req.body;
+        const group = await Group.findOne({ groupId: groupId });
+        var result = [];
+        console.log(group.userIdArray);
+        for (const test of group.userIdArray) {
+            // console.log(item);{
+            var temp = await Order.find({ userId: test });
+            for (const item of temp) {
+                console.log(item);
+                result.push(item);
+            }
+        }
+
+        console.log(result);
+
+        // await (
+        //     await Group.find({})
+        // ).forEach((item) => {
+        //     item.userIdArray.forEach((el) => {
+        //         if (el == userId) {
+        //             item.userIdArray = item.userIdArray.length;
+        //             result.push(item);
+        //         }
+        //     });
+        // });
+        res.send({
+            data: result,
+            message: "Groups Successfully fetched",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: error,
             message: "Unexpected error. Please try again",
         });
     }
