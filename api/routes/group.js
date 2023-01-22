@@ -100,7 +100,29 @@ router.post("/join-groups", async (req, res, next) => {
         });
     }
 });
-
+router.post("/leave-group", async (req, res, next) => {
+    try {
+        const userId = req.headers.authorization.split(" ")[1];
+        const result = [];
+        const { groupId } = req.body;
+        const group = await Group.find({ groupId });
+        console.log(group);
+        for (const item of group[0].userIdArray) {
+            console.log(item);
+            if (item != userId) result.push(item);
+        }
+        group.userIdArray = result;
+        await Group.updateOne({ groupId }, result);
+        res.send({
+            message: "Groups deleted successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: error,
+            message: "Unexpected error. Please try again",
+        });
+    }
+});
 router.post("/get-orders-by-groupid", async (req, res, next) => {
     try {
         const { groupId } = req.body;
