@@ -101,7 +101,7 @@ router.get("/get-friends-order", async (req, res, next) => {
                         }
                     });
                 }
-            console.log(result);
+            // console.log(result);
         });
 
         // groupIds.forEach(async (el) => {
@@ -118,11 +118,11 @@ router.get("/get-friends-order", async (req, res, next) => {
         // });
 
         // console.log(result);
-        if (result.length)
-            res.send({
-                result,
-                message: "Orders Successfully fetched",
-            });
+        // if (result.length)
+        res.send({
+            result,
+            message: "Orders Successfully fetched",
+        });
     } catch (error) {
         return res.status(500).json({
             error: error,
@@ -186,6 +186,22 @@ router.get("/get-order-by-storename/:storename", async (req, res, next) => {
         res.send({
             orderDetails,
             message: "Orders Successfully fetched",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: error,
+            message: "Unexpected error. Please try again",
+        });
+    }
+});
+
+router.delete("/delete-order", async (req, res, next) => {
+    try {
+        const { orderId } = req.body;
+        await Order.findOneAndDelete({ orderId: orderId });
+
+        res.send({
+            message: "Orders Successfully deleted",
         });
     } catch (error) {
         return res.status(500).json({

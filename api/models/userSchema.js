@@ -3,12 +3,12 @@ const userSchema = mongoose.Schema({
     _id: {
         type: mongoose.Schema.Types.ObjectId,
         require: true,
-        // unique: true,
+        unique: true,
     },
     userId: {
         type: String,
-        // require: true,
-        // unique: true,
+        require: true,
+        unique: true,
     },
     userName: {
         type: String,
@@ -16,7 +16,8 @@ const userSchema = mongoose.Schema({
     },
     userEmail: {
         type: String,
-        // unique: true,
+        unique: true,
+        require: true,
         // match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
     },
     userImage: {

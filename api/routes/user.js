@@ -16,11 +16,12 @@ router.post("/user-details", async (req, res, next) => {
             return res.status(505).json({ message: "Invalid data" });
         }
 
-        // const doesExist = await User.findOne({ userId: req.body.userId });
-        // if (!doesExist)
-        //     return res.status(409).json({
-        //         message: "User not found",
-        //     });
+        const doesExist = await User.findOne({ userId: req.body.userId });
+        if (doesExist)
+            return res.status(200).json({
+                body: doesExist,
+                message: "User already registered",
+            });
 
         const user = new User({
             _id: new mongoose.Types.ObjectId(),

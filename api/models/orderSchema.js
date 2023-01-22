@@ -12,7 +12,7 @@ const orderSchema = mongoose.Schema({
     groupId: {
         type: String,
         require: true,
-    },  
+    },
     storeName: {
         type: String,
     },
