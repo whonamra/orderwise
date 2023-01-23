@@ -7,6 +7,13 @@ const mongoose = require("mongoose");
 const userRoutes = require("./api/routes/user");
 const groupRoutes = require("./api/routes/group");
 const orderRoutes = require("./api/routes/order");
+
+// console.log(process.env.MONGO_ATLAS_PW);
+
+// console.log(
+//     `mongodb+srv://yashfrost:${process.env.MONGO_ATLAS_PW}@cluster0.98o63jq.mongodb.net/?retryWrites=true&w=majority`
+// );
+
 //MongoDB Connection
 mongoose
     .connect(
