@@ -3,12 +3,14 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const userRoutes = require("./api/routes/user");
 const groupRoutes = require("./api/routes/group");
 const orderRoutes = require("./api/routes/order");
 
-// console.log(process.env.MONGO_ATLAS_PW);
+console.log(process.env.MONGO_ATLAS_PW);
 
 // console.log(
 //     `mongodb+srv://yashfrost:${process.env.MONGO_ATLAS_PW}@cluster0.98o63jq.mongodb.net/?retryWrites=true&w=majority`
@@ -17,7 +19,7 @@ const orderRoutes = require("./api/routes/order");
 //MongoDB Connection
 mongoose
     .connect(
-        "mongodb+srv://yashfrost:7JT4trxphBVston2@cluster0.98o63jq.mongodb.net/?retryWrites=true&w=majority",
+        `mongodb+srv://yashfrost:${process.env.MONGO_ATLAS_PW}@cluster0.98o63jq.mongodb.net/?retryWrites=true&w=majority`,
         {
             useUnifiedTopology: true,
             useNewUrlParser: true,
